@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        ".\\pixelate_mesh-main\\Cargo.toml"
+    ]
+}
