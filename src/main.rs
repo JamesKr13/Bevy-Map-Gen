@@ -6,8 +6,8 @@ use rand::Rng;
 use std::f32::consts::PI;
 
 
-const CHUNK_SIZE: f32 = 10.;
-const TRIANGLE_DENSITY: usize = 8000;
+const CHUNK_SIZE: f32 = 100.;
+const TRIANGLE_DENSITY: usize = 1000;
 
 
 fn main() {
@@ -42,39 +42,6 @@ fn setup(
     chunk.create_plane();
     commands.spawn(PbrBundle {
         mesh: meshes.add(chunk.create_mesh()),
-        material: materials.add(StandardMaterial {
-            base_color_texture: Some(texture_handle.clone()),
-            ..default()
-        }),
-        ..default()
-    });
-    let mut chunk2 = ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: height_map.clone()};
-    let mut mesh2 = Mesh::new(PrimitiveTopology::TriangleList);
-    chunk2.create_plane();
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(chunk2.create_mesh()),
-        material: materials.add(StandardMaterial {
-            base_color_texture: Some(texture_handle.clone()),
-            ..default()
-        }),
-        ..default()
-    });
-    let mut chunk3 = ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: height_map.clone()};
-    let mut mesh3 = Mesh::new(PrimitiveTopology::TriangleList);
-    chunk3.create_plane();
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(chunk3.create_mesh()),
-        material: materials.add(StandardMaterial {
-            base_color_texture: Some(texture_handle.clone()),
-            ..default()
-        }),
-        ..default()
-    });
-    let mut chunk3 = ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: height_map.clone()};
-    let mut mesh3 = Mesh::new(PrimitiveTopology::TriangleList);
-    chunk2.create_plane();
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(chunk3.create_mesh()),
         material: materials.add(StandardMaterial {
             base_color_texture: Some(texture_handle),
             ..default()
