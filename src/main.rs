@@ -54,6 +54,28 @@ fn setup(
     commands.spawn(PbrBundle {
         mesh: meshes.add(chunk2.create_mesh()),
         material: materials.add(StandardMaterial {
+            base_color_texture: Some(texture_handle.clone()),
+            ..default()
+        }),
+        ..default()
+    });
+    let mut chunk3 = ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: height_map.clone()};
+    let mut mesh3 = Mesh::new(PrimitiveTopology::TriangleList);
+    chunk3.create_plane();
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(chunk3.create_mesh()),
+        material: materials.add(StandardMaterial {
+            base_color_texture: Some(texture_handle.clone()),
+            ..default()
+        }),
+        ..default()
+    });
+    let mut chunk3 = ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: height_map.clone()};
+    let mut mesh3 = Mesh::new(PrimitiveTopology::TriangleList);
+    chunk2.create_plane();
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(chunk3.create_mesh()),
+        material: materials.add(StandardMaterial {
             base_color_texture: Some(texture_handle),
             ..default()
         }),
