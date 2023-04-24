@@ -6,7 +6,7 @@ use rand::Rng;
 use std::f32::consts::PI;
 
 
-const CHUNK_SIZE: f32 = 100.;
+const CHUNK_SIZE: f32 = 10.;
 const TRIANGLE_DENSITY: usize = 8000;
 
 
