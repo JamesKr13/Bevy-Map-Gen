@@ -7,7 +7,7 @@ use std::f32::consts::PI;
 
 
 const CHUNK_SIZE: f32 = 100.;
-const TRIANGLE_DENSITY: usize = 500;
+const TRIANGLE_DENSITY: usize = 8000;
 
 
 fn main() {
