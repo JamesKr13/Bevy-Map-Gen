@@ -7,7 +7,7 @@ use std::f32::consts::PI;
 use bevy_egui::{EguiPlugin,egui,EguiContexts};
 // use bevy::egui::{self,Ui};
 
-const CHUNK_SIZE: f32 = 50.;
+const CHUNK_SIZE: f32 = 40.;
 const TRIANGLE_DENSITY: usize = 400;
 const FREQ_MAX: f32 = 100.;
 const ALT_MAX: f32 = 25.;
@@ -49,9 +49,9 @@ fn ui_system(mut noise_octaves: ResMut<NoiseOctaves>, mut contexts: EguiContexts
     egui::Window::new("Noise").show(contexts.ctx_mut(), |ui| {
         if ui.button("Add Noise").clicked() {
             plane.chunk_seeds.push(rng.gen_range(0..u32::MAX));
-            noise_octaves.octaves_freq.push(0.0);
+            noise_octaves.octaves_freq.push(0.1);
             noise_octaves.selections.push(0);
-            noise_octaves.octaves_alit.push(0.0);
+            noise_octaves.octaves_alit.push(0.1);
         }
         if ui.button("Remove Noise").clicked() {
             let len = noise_octaves.octaves_alit.len();
@@ -97,7 +97,7 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut chunk: ResMut<ChunkPlane>,
 ) {
-    let texture_handle = asset_server.load("sand3.png");
+    let texture_handle = asset_server.load("rock2.png");
     let mut mesh = Mesh::new(PrimitiveTopology::TriangleList);
     chunk.create_plane();
     commands.spawn(PbrBundle {
