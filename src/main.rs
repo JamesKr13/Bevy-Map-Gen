@@ -7,10 +7,10 @@ use std::f32::consts::PI;
 use bevy_egui::{EguiPlugin,egui,EguiContexts};
 // use bevy::egui::{self,Ui};
 
-const CHUNK_SIZE: f32 = 80.;
-const TRIANGLE_DENSITY: usize = 120;
-const FREQ_MAX: f32 = 50.;
-const ALT_MAX: f32 = 50.;
+const CHUNK_SIZE: f32 = 50.;
+const TRIANGLE_DENSITY: usize = 400;
+const FREQ_MAX: f32 = 100.;
+const ALT_MAX: f32 = 25.;
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
 enum GameState {
     #[default]
@@ -35,7 +35,7 @@ fn main() {
         .add_state::<GameState>()
         // .insert_resource(WinitSettings::desktop_app())
         .add_plugin(EguiPlugin)
-        .insert_resource(NoiseOctaves {octaves_freq: vec!(0.0), octaves_alit: vec!(0.0), selections: vec!(0), power_ex: 1.0})
+        .insert_resource(NoiseOctaves {octaves_freq: vec!(0.1), octaves_alit: vec!(0.1), selections: vec!(0), power_ex: 1.0})
         .insert_resource(ChunkPlane {mesh_vertices: Vec::new(),mesh_normals: Vec::new(), mesh_uvs: Vec::new(), mesh_indices: Vec::new(), height_map: Vec::new(),chunk_seeds: vec!(0)})
         .add_system(ui_system)
         // .add_system(await_key)
