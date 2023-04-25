@@ -1,3 +1,4 @@
 # Bevy-Map-Gen
 Interface for creating 3d maps using noise
-![ Alt text](Bevy_map.gif)
+
+<img src="bevy_map.gif" width="500" height="500"/>
