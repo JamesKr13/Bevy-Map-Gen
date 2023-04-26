@@ -1,14 +1,14 @@
 use bevy::{pbr::CascadeShadowConfigBuilder,prelude::*,asset::*,winit::WinitSettings};
 use bevy::render::mesh::{self, PrimitiveTopology,Indices};
 use bevy_flycam::prelude::*;
-use noise::{NoiseFn, Perlin, Seedable};
+use noise::{NoiseFn, Perlin, Seedable,OpenSimplex};
 use rand::Rng;
 use std::f32::consts::PI;
 use bevy_egui::{EguiPlugin,egui,EguiContexts};
 // use bevy::egui::{self,Ui};
 
 const CHUNK_SIZE: f32 = 40.;
-const TRIANGLE_DENSITY: usize = 400;
+const TRIANGLE_ROOT_DENSITY: usize = 100;
 const FREQ_MAX: f32 = 100.;
 const ALT_MAX: f32 = 25.;
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
@@ -26,6 +26,7 @@ struct NoiseOctaves {
     octaves_alit:Vec<f32>,
     selections: Vec<usize>,
     power_ex: f32,
+    
 }
 fn main() {
     App::new()
@@ -43,7 +44,9 @@ fn main() {
         .add_startup_system(setup)
         .run();
 }
-
+// fn change_state_menu(mut state: ResMut<State<GameState>>) {
+//    state.set(GameState::MenuInUse);
+// }
 fn ui_system(mut noise_octaves: ResMut<NoiseOctaves>, mut contexts: EguiContexts, mut plane: ResMut<ChunkPlane>) {
     let mut rng = rand::thread_rng();
     egui::Window::new("Noise").show(contexts.ctx_mut(), |ui| {
@@ -118,9 +121,6 @@ fn setup(
             rotation: Quat::from_rotation_x(-PI / 4.),
             ..default()
         },
-        // The default cascade config is designed to handle large scenes.
-        // As this example has a much smaller world, we can tighten the shadow
-        // bounds for better visual quality.
         cascade_shadow_config: CascadeShadowConfigBuilder {
             first_cascade_far_bound: 4.0,
             maximum_distance: 100.0,
@@ -129,10 +129,6 @@ fn setup(
         .into(),
         ..default()
     });
-    // commands.spawn(Camera3dBundle {
-    //     transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-    //     ..default()
-    // });
 }
 #[derive(Resource, Default)]
 struct ChunkPlane {
@@ -145,13 +141,12 @@ struct ChunkPlane {
 }
 impl ChunkPlane {
     fn create_plane(&mut self) {
-        let triangle_density = TRIANGLE_DENSITY+1;
         let width = CHUNK_SIZE;
         let height = CHUNK_SIZE;
-        let triangle_width = width / triangle_density as f32;
-        let triangle_height = height / triangle_density as f32;
-        for y in 0..triangle_density {
-            for x in 0..triangle_density {
+        let triangle_width = width / TRIANGLE_ROOT_DENSITY as f32;
+        let triangle_height = height / TRIANGLE_ROOT_DENSITY as f32;
+        for y in 0..TRIANGLE_ROOT_DENSITY+1 {
+            for x in 0..TRIANGLE_ROOT_DENSITY+1 {
                 let x_pos = x as f32 * triangle_width - width / 2.0;
                 let y_pos = y as f32 * triangle_height - height / 2.0;
                 // let z_pos = self.height_map[y][x] as f32;
@@ -173,9 +168,9 @@ impl ChunkPlane {
                 self.mesh_uvs.push([u,v]);
 
                 if (x > 0 && y > 0){
-                    let current_index = (y * (triangle_density) + x) as u32;
+                    let current_index = (y * (TRIANGLE_ROOT_DENSITY+1) + x) as u32;
                     let prev_index = current_index - 1;
-                    let top_index = current_index-triangle_density as u32;
+                    let top_index = current_index-(TRIANGLE_ROOT_DENSITY+1) as u32;
                     let top_right_index = top_index-1;
                     self.mesh_indices.push(prev_index);
                     self.mesh_indices.push(current_index);
@@ -207,11 +202,11 @@ fn update_plane(
     let (transform, mut handle) = query.get_single_mut().expect("");
     let mut mesh = assets.get_mut(handle);
     let seed_number = plane.chunk_seeds.len();
-    let mut temp_noise: Vec<Perlin> = Vec::with_capacity(seed_number);
+    let mut temp_noise: Vec<OpenSimplex> = Vec::with_capacity(seed_number);
     for seed in &plane.chunk_seeds {
-        temp_noise.push(Perlin::new(*seed))
+        temp_noise.push(OpenSimplex::new(*seed))
     }
-    let test = Perlin::new(0);
+    let test = OpenSimplex::new(0);
     if mesh.is_some() {
         let mesh_unwrapped = mesh.unwrap();
         let mut positions = &mesh_unwrapped.attribute_mut(Mesh::ATTRIBUTE_POSITION).unwrap();
@@ -223,10 +218,10 @@ fn update_plane(
                 let mut freq = noise_octaves.octaves_freq[noise_index] as f32;
                 let mut alt = noise_octaves.octaves_alit[noise_index] as f64;
                 if freq == 0.0 {
-                    freq = 1.0;
+                    freq = 0.001;
                 }
                 if alt == 0.0 {
-                    alt = 1.0;
+                    alt = 0.001;
                 }
                 let ridgenoise_index: usize = noise_octaves.selections[noise_index];
                 let value: f64 = alt*ridgenoise(temp_noise[noise_index].get([(temp[0]/freq) as f64,(temp[2]/freq) as f64]));
@@ -236,6 +231,8 @@ fn update_plane(
             }
             if temp[1] >= 0.0 {
                 temp[1] = temp[1].powf(noise_octaves.power_ex);
+            } else {
+                temp[1] = temp[1]/100.;
             }
             temporary.push(temp);
         }
