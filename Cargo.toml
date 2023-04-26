@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.10.1"
-bevy_hanabi = "0.6"
+# bevy_hanabi = "0.6"
 bevy_flycam = { git = "https://github.com/sburris0/bevy_flycam" }
 noise = "0.8.2"
 rand = "0.8.5"

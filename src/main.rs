@@ -8,7 +8,7 @@ use bevy_egui::{EguiPlugin,egui,EguiContexts};
 // use bevy::egui::{self,Ui};
 
 const CHUNK_SIZE: f32 = 40.;
-const TRIANGLE_ROOT_DENSITY: usize = 100;
+const TRIANGLE_ROOT_DENSITY: usize = 2000;
 const FREQ_MAX: f32 = 100.;
 const ALT_MAX: f32 = 25.;
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
